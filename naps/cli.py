@@ -1,14 +1,20 @@
 """Console script for naps."""
+import anyio
 import sys
 import click
+import ipaddress
+
+from naps import schedule
 
 
 @click.command()
-def main(args=None):
+@click.argument("network", type=str)
+@click.argument("port_range_start", type=int)
+@click.argument("port_range_end", type=int)
+def main(**kwargs):
     """Console script for naps."""
-    click.echo("Replace this message by putting your code into "
-               "naps.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
+    network = ipaddress.ip_network(kwargs["network"])
+    anyio.run(schedule, network, kwargs["port_range_start"], kwargs["port_range_end"] + 1)
     return 0
 
 
